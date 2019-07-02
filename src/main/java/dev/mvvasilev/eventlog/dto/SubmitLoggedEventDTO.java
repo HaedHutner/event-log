@@ -7,11 +7,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
-public class SubmitLoggedEventDTO {
+public class SubmitLoggedEventDTO implements Serializable {
 
     @NotNull
     private EventType eventType;
@@ -87,5 +88,16 @@ public class SubmitLoggedEventDTO {
     @Override
     public int hashCode() {
         return Objects.hash(eventType, source, submittedAt, version, data);
+    }
+
+    @Override
+    public String toString() {
+        return "SubmitLoggedEventDTO{" +
+                "eventType=" + eventType +
+                ", source='" + source + '\'' +
+                ", submittedAt=" + submittedAt +
+                ", version=" + version +
+                ", data=" + data +
+                '}';
     }
 }

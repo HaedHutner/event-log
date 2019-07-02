@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.mvvasilev.eventlog.enums.EventType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
-public class ResponseLoggedEventDTO {
+public class ResponseLoggedEventDTO implements Serializable {
 
     private EventType eventType;
 

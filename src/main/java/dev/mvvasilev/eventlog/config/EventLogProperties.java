@@ -2,7 +2,6 @@ package dev.mvvasilev.eventlog.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 @ConfigurationProperties(prefix = "eventlog")
 public class EventLogProperties {
@@ -16,10 +15,10 @@ public class EventLogProperties {
     @Value("{eventlog.submit-queue}")
     private String submitQueue;
 
-    @Value("{eventlog.submit-queue.routing-key}")
+    @Value("{eventlog.submit-routing-key}")
     private String submitRoutingKey;
 
-    @Value("{eventlog.publish-queue.routing-key}")
+    @Value("{eventlog.publish-routing-key}")
     private String publishRoutingKey;
 
     public void setExchange(String exchange) {
