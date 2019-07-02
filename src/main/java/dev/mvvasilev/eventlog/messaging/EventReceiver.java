@@ -1,5 +1,6 @@
 package dev.mvvasilev.eventlog.messaging;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.mvvasilev.eventlog.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.facade.LoggedEventFacade;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ public class EventReceiver {
         this.loggedEventFacade = loggedEventFacade;
     }
 
-    public void receive(SubmitLoggedEventDTO submitLoggedEventDTO) {
+    public void receive(SubmitLoggedEventDTO submitLoggedEventDTO) throws JsonProcessingException {
         loggedEventFacade.postEvent(submitLoggedEventDTO);
     }
 }

@@ -1,5 +1,6 @@
 package dev.mvvasilev.eventlog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.mvvasilev.eventlog.dto.ResponseLoggedEventDTO;
 import dev.mvvasilev.eventlog.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.facade.LoggedEventFacade;
@@ -21,7 +22,7 @@ public class LoggedEventController {
     }
 
     @PostMapping("/")
-    public ResponseLoggedEventDTO postEvent(@RequestBody @Valid SubmitLoggedEventDTO submitLoggedEventDTO) {
+    public ResponseLoggedEventDTO postEvent(@RequestBody @Valid SubmitLoggedEventDTO submitLoggedEventDTO) throws JsonProcessingException {
         return loggedEventFacade.postEvent(submitLoggedEventDTO);
     }
 

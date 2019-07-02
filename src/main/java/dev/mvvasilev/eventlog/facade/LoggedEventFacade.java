@@ -1,5 +1,8 @@
 package dev.mvvasilev.eventlog.facade;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.mvvasilev.eventlog.config.EventLogProperties;
 import dev.mvvasilev.eventlog.dto.ResponseLoggedEventDTO;
 import dev.mvvasilev.eventlog.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.service.LoggedEventService;
@@ -9,24 +12,28 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import static dev.mvvasilev.eventlog.config.RabbitMQConfiguration.PUBLISH_EVENT_LOG_ROUTING_KEY;
-
 @Component
 public class LoggedEventFacade {
 
+    private EventLogProperties properties;
+
     private ModelMapper modelMapper;
+
+    private ObjectMapper objectMapper;
 
     private LoggedEventService loggedEventService;
 
     private RabbitTemplate rabbitTemplate;
 
-    public LoggedEventFacade(ModelMapper modelMapper, LoggedEventService loggedEventService, RabbitTemplate rabbitTemplate) {
+    public LoggedEventFacade(EventLogProperties properties, ModelMapper modelMapper, ObjectMapper objectMapper, LoggedEventService loggedEventService, RabbitTemplate rabbitTemplate) {
+        this.properties = properties;
         this.modelMapper = modelMapper;
+        this.objectMapper = objectMapper;
         this.loggedEventService = loggedEventService;
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public ResponseLoggedEventDTO postEvent(SubmitLoggedEventDTO submitLoggedEventDTO) {
+    public ResponseLoggedEventDTO postEvent(SubmitLoggedEventDTO submitLoggedEventDTO) throws JsonProcessingException {
         ResponseLoggedEventDTO response = modelMapper.map(loggedEventService.logEvent(
                 submitLoggedEventDTO.getEventType(),
                 submitLoggedEventDTO.getSubmittedAt(),
@@ -35,7 +42,11 @@ public class LoggedEventFacade {
                 submitLoggedEventDTO.getData()
         ), ResponseLoggedEventDTO.class);
 
-        rabbitTemplate.convertAndSend(String.format(PUBLISH_EVENT_LOG_ROUTING_KEY, response.getEventType()), response);
+        rabbitTemplate.convertAndSend(
+                properties.getExchange(),
+                properties.getPublishRoutingKey(),
+                objectMapper.writeValueAsString(response)
+        );
 
         return response;
     }

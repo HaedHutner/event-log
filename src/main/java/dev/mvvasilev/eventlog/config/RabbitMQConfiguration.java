@@ -11,36 +11,44 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfiguration {
 
-    public static final String TOPIC_EXCHANGE_NAME = "event-log-exchange";
+    private EventLogProperties properties;
 
-    public static final String QUEUE_NAME = "event-log-queue";
-
-    public static final String SUBMIT_EVENT_LOG_ROUTING_KEY = "event.submit.#";
-
-    public static final String PUBLISH_EVENT_LOG_ROUTING_KEY = "event.publish.%s";
+    public RabbitMQConfiguration(EventLogProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean
     public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(QUEUE_NAME);
+        container.setQueueNames(properties.getSubmitQueue());
         container.setMessageListener(listenerAdapter);
         return container;
     }
 
     @Bean
-    public Queue queue() {
-        return new Queue(QUEUE_NAME, false);
+    public Queue submitQueue() {
+        return new Queue(properties.getSubmitQueue(), false);
+    }
+
+    @Bean
+    public Queue publishQueue() {
+        return new Queue(properties.getPublishQueue(), false);
     }
 
     @Bean
     public Exchange exchange() {
-        return new TopicExchange(TOPIC_EXCHANGE_NAME);
+        return new TopicExchange(properties.getExchange());
     }
 
     @Bean
-    public Binding binding(Queue queue, Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(SUBMIT_EVENT_LOG_ROUTING_KEY).noargs();
+    public Binding submitBinding(Queue submitQueue, Exchange exchange) {
+        return BindingBuilder.bind(submitQueue).to(exchange).with(properties.getSubmitRoutingKey()).noargs();
+    }
+
+    @Bean
+    public Binding publishBinding(Queue publishQueue, Exchange exchange) {
+        return BindingBuilder.bind(publishQueue).to(exchange).with(properties.getPublishRoutingKey()).noargs();
     }
 
     @Bean

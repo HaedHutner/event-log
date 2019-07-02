@@ -2,6 +2,7 @@ package dev.mvvasilev.eventlog.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import dev.mvvasilev.eventlog.enums.EventType;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,8 @@ public class SubmitLoggedEventDTO {
     private String source;
 
     @PastOrPresent
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-ddThh:dd:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime submittedAt;
 
     private int version;
@@ -49,6 +51,7 @@ public class SubmitLoggedEventDTO {
         return submittedAt;
     }
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     public void setSubmittedAt(LocalDateTime submittedAt) {
         this.submittedAt = submittedAt;
     }
