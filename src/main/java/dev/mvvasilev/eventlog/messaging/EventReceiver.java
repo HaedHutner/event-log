@@ -1,5 +1,6 @@
 package dev.mvvasilev.eventlog.messaging;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.mvvasilev.eventlog.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.facade.LoggedEventFacade;
@@ -7,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import java.io.IOException;
@@ -29,18 +29,23 @@ public class EventReceiver {
         this.validator = mvcValidator;
     }
 
-    public void receiveMessage(byte[] message) throws IOException {
-        SubmitLoggedEventDTO dto = objectMapper.readValue(message, SubmitLoggedEventDTO.class);
+    public void receiveMessage(byte[] message) {
+        try {
+            SubmitLoggedEventDTO dto = objectMapper.readValue(message, SubmitLoggedEventDTO.class);
 
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(this, dto.toString());
+            BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(this, dto.toString());
 
-        validator.validate(dto, bindingResult);
+            validator.validate(dto, bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> logger.error(error.toString()));
-            return;
+            if (bindingResult.hasErrors()) {
+                bindingResult.getAllErrors().forEach(error -> logger.error(error.toString()));
+                return;
+            }
+
+            loggedEventFacade.postEvent(dto);
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
         }
-
-        loggedEventFacade.postEvent(dto);
     }
 }
