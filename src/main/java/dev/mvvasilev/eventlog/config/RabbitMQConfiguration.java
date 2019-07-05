@@ -1,5 +1,6 @@
 package dev.mvvasilev.eventlog.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.mvvasilev.eventlog.messaging.EventReceiver;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -21,11 +22,11 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter) {
+    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory, MessageConverter messageConverter, MessageListenerAdapter eventListener) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setQueueNames(properties.getSubmitQueue());
-        container.setMessageListener(listenerAdapter);
+        container.setMessageListener(eventListener);
         return container;
     }
 
@@ -55,8 +56,10 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(EventReceiver eventReceiver) {
-        return new MessageListenerAdapter(eventReceiver, "receiveMessage");
+    public MessageListenerAdapter listenerAdapter(EventReceiver eventReceiver, MessageConverter messageConverter) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(eventReceiver, "receiveMessage");
+        adapter.setMessageConverter(messageConverter);
+        return adapter;
     }
 
     @Bean
@@ -67,8 +70,8 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public MessageConverter messageConverter(ObjectMapper objectMapper) {
+        return new Jackson2JsonMessageConverter(objectMapper);
     }
 
 }

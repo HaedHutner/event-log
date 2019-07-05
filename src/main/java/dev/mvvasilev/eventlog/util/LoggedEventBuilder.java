@@ -1,8 +1,7 @@
 package dev.mvvasilev.eventlog.util;
 
+import dev.mvvasilev.common.enums.EventType;
 import dev.mvvasilev.eventlog.entity.LoggedEvent;
-import dev.mvvasilev.eventlog.enums.EventType;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;

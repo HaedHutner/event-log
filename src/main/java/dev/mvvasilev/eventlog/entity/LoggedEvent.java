@@ -1,6 +1,6 @@
 package dev.mvvasilev.eventlog.entity;
 
-import dev.mvvasilev.eventlog.enums.EventType;
+import dev.mvvasilev.common.enums.EventType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;

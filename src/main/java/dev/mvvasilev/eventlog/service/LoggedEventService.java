@@ -1,7 +1,7 @@
 package dev.mvvasilev.eventlog.service;
 
+import dev.mvvasilev.common.enums.EventType;
 import dev.mvvasilev.eventlog.entity.LoggedEvent;
-import dev.mvvasilev.eventlog.enums.EventType;
 import dev.mvvasilev.eventlog.repository.LoggedEventRepository;
 import dev.mvvasilev.eventlog.util.LoggedEventBuilder;
 import org.springframework.data.domain.Page;

@@ -2,15 +2,17 @@ package dev.mvvasilev.eventlog.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.mvvasilev.common.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.config.EventLogProperties;
 import dev.mvvasilev.eventlog.dto.ResponseLoggedEventDTO;
-import dev.mvvasilev.eventlog.dto.SubmitLoggedEventDTO;
 import dev.mvvasilev.eventlog.service.LoggedEventService;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @Component
 public class LoggedEventFacade {
@@ -33,7 +35,7 @@ public class LoggedEventFacade {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public ResponseLoggedEventDTO postEvent(SubmitLoggedEventDTO submitLoggedEventDTO) throws JsonProcessingException {
+    public ResponseLoggedEventDTO postEvent(SubmitLoggedEventDTO<Map<String, Object>> submitLoggedEventDTO) throws JsonProcessingException {
         ResponseLoggedEventDTO response = modelMapper.map(loggedEventService.logEvent(
                 submitLoggedEventDTO.getEventType(),
                 submitLoggedEventDTO.getSubmittedAt(),

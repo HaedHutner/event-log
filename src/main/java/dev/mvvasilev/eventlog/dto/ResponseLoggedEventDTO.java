@@ -1,7 +1,7 @@
 package dev.mvvasilev.eventlog.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import dev.mvvasilev.eventlog.enums.EventType;
+import dev.mvvasilev.common.enums.EventType;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
