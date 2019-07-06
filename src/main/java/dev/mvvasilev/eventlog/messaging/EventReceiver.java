@@ -1,7 +1,7 @@
 package dev.mvvasilev.eventlog.messaging;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.mvvasilev.common.dto.SubmitLoggedEventDTO;
+import dev.mvvasilev.common.dto.EventLog;
 import dev.mvvasilev.eventlog.facade.LoggedEventFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class EventReceiver {
         this.validator = mvcValidator;
     }
 
-    public void receiveMessage(SubmitLoggedEventDTO message) {
+    public void receiveMessage(EventLog message) {
         try {
             BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(this, message.toString());
 

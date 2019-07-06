@@ -2,7 +2,7 @@ package dev.mvvasilev.eventlog.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.mvvasilev.common.dto.SubmitLoggedEventDTO;
+import dev.mvvasilev.common.dto.EventLog;
 import dev.mvvasilev.eventlog.config.EventLogProperties;
 import dev.mvvasilev.eventlog.dto.ResponseLoggedEventDTO;
 import dev.mvvasilev.eventlog.service.LoggedEventService;
@@ -35,7 +35,7 @@ public class LoggedEventFacade {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public ResponseLoggedEventDTO postEvent(SubmitLoggedEventDTO<Map<String, Object>> submitLoggedEventDTO) throws JsonProcessingException {
+    public ResponseLoggedEventDTO postEvent(EventLog<Map<String, Object>> submitLoggedEventDTO) throws JsonProcessingException {
         ResponseLoggedEventDTO response = modelMapper.map(loggedEventService.logEvent(
                 submitLoggedEventDTO.getEventType(),
                 submitLoggedEventDTO.getSubmittedAt(),
